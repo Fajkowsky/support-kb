@@ -1,0 +1,68 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: support desk
+status: open
+reviewed: 2026-10-28
+signature: 'Dawid Fajkowski'
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'Fajkowsky/support-kb';
+  const issues = { parser: 1, hint: 2, 'one-day move': 3 };
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix queued. Its own reports show three problems.
+The queued parser fix closes one of them.
+
+<Callout kind="warn">
+Three problems, three fixes, three tickets. Fixing the parser leaves the other two open.
+</Callout>
+
+## The problems
+
+<ProblemTable ticket={4471} {repo} {issues} />
+
+### `parser`: the shared parser reads every date month first
+
+Every tenant on file writes the day first. The parser reads `02/12` as 12 February when the
+tenant meant 2 December. In every report that quotes two dates, both day numbers are 12 or
+lower, so the misread parses cleanly and nothing raises an error. The queued fix belongs here:
+parse dates in the tenant's locale.
+
+### `hint`: booking-v3's form tells people to type the month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. A day-first tenant's people type what the
+hint says, and the form reads the date the tenant's way. The symptom matches the parser bug, but
+the parser fix does not touch this code path. Fix the hint: print the order the form reads, from
+the tenant's locale. Only booking-v3 tenants, and only reports that came in through the form.
+
+### `one-day move`: the date shifts by a day, day and month stay put
+
+These reports describe a different failure. Tuesday shows as Monday. A client in Lisbon gets
+Tuesday while a client in Toronto gets Monday for the same meeting. An invite arrives before its
+booking. June bookings are one day off. The desk's notes already flag them, but the cause table
+on #4471 files them under `parser` because it looks up the tenant only. A time-zone or
+daylight-saving conversion at a date boundary fits these reports. That is a lead, not a finding.
+
+## How the reports were counted
+
+- One report per id. The ticket system exports overlapping pages, so some reports appear twice.
+- Cause by tenant: locale and booking form from the tenant directory, through `causes.ts`.
+  Intake's tag is a guess from the reporter's browser. It disagrees with the tenant often, so it
+  decides nothing here.
+- One-day moves from `desk-notes.json`, counted on their own and taken out of `parser`.
+
+## Lessons
+
+- Merge on cause, not on symptom. All three problems produce the same symptom, a wrong date, so
+  every subject line looked alike. A new decision record should replace
+  [0001](/kb/decisions/0001-dedupe-by-subject); 0001 stays as written.
+- Read what the page shows. The cause table on #4471 already showed a second cause while the
+  words above it said one issue.
+
+<RenderStamp {signature} />
