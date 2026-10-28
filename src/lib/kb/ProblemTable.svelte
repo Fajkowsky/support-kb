@@ -6,9 +6,7 @@
 
   // One row per problem in a ticket, each counted once: the causes causes.ts finds, minus the reports
   // the desk read as a one-day move (desk-notes.json), which are a problem of their own.
-  // `tickets`: problem → the issue in the GitHub `repo` that tracks it, and where that issue stands.
-  type Tracked = { issue: number; state: string };
-  let { ticket, repo, tickets = {} }: { ticket: number; repo: string; tickets?: Record<string, Tracked> } = $props();
+  let { ticket }: { ticket: number } = $props();
 
   const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
   const isOneDayMove = (r: Report) => notes.oneDayMove.includes(r.id);
@@ -27,7 +25,7 @@
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>ticket</th><th>state</th></tr>
+    <tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th></tr>
   </thead>
   <tbody>
     {#each problems as p (p.cause)}
@@ -36,13 +34,6 @@
         <td>{p.reports.length}</td>
         <td>{p.tenants}</td>
         <td>{p.firstSeen} → {p.lastSeen}</td>
-        {#if tickets[p.cause]}
-          <td><a href="https://github.com/{repo}/issues/{tickets[p.cause].issue}">{repo}#{tickets[p.cause].issue}</a></td>
-          <td class:open={tickets[p.cause].state === 'open'}>{tickets[p.cause].state}</td>
-        {:else}
-          <td>none yet</td>
-          <td class="open">open</td>
-        {/if}
       </tr>
     {/each}
   </tbody>
@@ -50,5 +41,4 @@
 
 <style>
   .sum { font-size: 1.1rem; }
-  .open { color: var(--warn); font-weight: 600; }
 </style>

@@ -11,13 +11,6 @@ signature: 'Dawid Fajkowski'
   import ProblemTable from '#lib/kb/ProblemTable.svelte';
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
-
-  const repo = 'Fajkowsky/support-kb';
-  const tickets = {
-    parser: { issue: 1, state: 'fixed' },
-    hint: { issue: 2, state: "won't fix" },
-    'one-day move': { issue: 3, state: 'open' },
-  };
 </script>
 
 [#4471](/kb/incidents/4471) says one issue, one fix queued. Its own reports show three problems.
@@ -30,7 +23,13 @@ form is retired. Neither change touches the third problem.
 
 ## The problems
 
-<ProblemTable ticket={4471} {repo} {tickets} />
+<ProblemTable ticket={4471} />
+
+One ticket per problem:
+
+- `parser`: [Fajkowsky/support-kb#1](https://github.com/Fajkowsky/support-kb/issues/1), fixed
+- `hint`: [Fajkowsky/support-kb#2](https://github.com/Fajkowsky/support-kb/issues/2), won't fix
+- `one-day move`: [Fajkowsky/support-kb#3](https://github.com/Fajkowsky/support-kb/issues/3), **open**
 
 ### `parser`: the shared parser reads every date month first
 
