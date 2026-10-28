@@ -8,7 +8,7 @@ signature: 'Dawid Fajkowski'
 ---
 
 <script>
-  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
@@ -23,7 +23,11 @@ form is retired. Neither change touches the third problem.
 
 ## The problems
 
-<ProblemTable ticket={4471} />
+<CauseTable ticket={4471} />
+
+The table counts the one-day moves under `parser` and footnotes them. They are a problem of their
+own, so they have their own ticket and leave the `parser` ticket. `hint` has a ticket of its own
+now too.
 
 One ticket per problem:
 
@@ -63,7 +67,8 @@ right.
 - Cause by tenant: locale and booking form from the tenant directory, through `causes.ts`.
   Intake's tag is a guess from the reporter's browser. It disagrees with the tenant often, so it
   decides nothing here.
-- One-day moves from `desk-notes.json`, counted on their own and taken out of `parser`.
+- One-day moves from `desk-notes.json`: the table footnotes them under `parser`; their ticket
+  counts them on their own.
 
 ## Lessons
 
