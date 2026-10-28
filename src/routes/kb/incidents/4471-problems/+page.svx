@@ -1,7 +1,7 @@
 ---
 layout: runbook
 title: '#4471 · three problems, not one'
-owner: support desk
+owner: 'Dawid Fajkowski'
 status: open
 reviewed: 2026-10-28
 signature: 'Dawid Fajkowski'
