@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: 'Dawid Fajkowski'
 status: open
 reviewed: 2026-10-28
-signature: Fajkowsky
+signature: v1.eyJzdWIiOiIyNzM1IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMxNzM4MDQsImV4cCI6MTc5MzI2MDIwNH0.yA3EEVCcY1Z4EmonLzvrcCFk16yeu--R53xYPdQChZw
 ---
 
 <script>
