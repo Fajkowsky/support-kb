@@ -13,33 +13,40 @@ signature: 'Dawid Fajkowski'
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
   const repo = 'Fajkowsky/support-kb';
-  const issues = { parser: 1, hint: 2, 'one-day move': 3 };
+  const tickets = {
+    parser: { issue: 1, state: 'fixed' },
+    hint: { issue: 2, state: "won't fix" },
+    'one-day move': { issue: 3, state: 'open' },
+  };
 </script>
 
 [#4471](/kb/incidents/4471) says one issue, one fix queued. Its own reports show three problems.
-The queued parser fix closes one of them.
+Engineering closed #4471 on 5 October: `parser` fixed, `hint` won't fix because the booking-v3
+form is retired. Neither change touches the third problem.
 
 <Callout kind="warn">
-Three problems, three fixes, three tickets. Fixing the parser leaves the other two open.
+#4471 is closed, but the one-day move is still open. Neither change fixes it.
 </Callout>
 
 ## The problems
 
-<ProblemTable ticket={4471} {repo} {issues} />
+<ProblemTable ticket={4471} {repo} {tickets} />
 
 ### `parser`: the shared parser reads every date month first
 
 Every tenant on file writes the day first. The parser reads `02/12` as 12 February when the
 tenant meant 2 December. In every report that quotes two dates, both day numbers are 12 or
-lower, so the misread parses cleanly and nothing raises an error. The queued fix belongs here:
-parse dates in the tenant's locale.
+lower, so the misread parses cleanly and nothing raises an error. Fixed in
+`fix(dates): parse dd/mm for eu locales`. If a day-first tenant still reports a flip, check that
+the fix asks the locale, as `causes.ts` does, rather than a list of EU locales: `en-GB` writes the
+day first too.
 
 ### `hint`: booking-v3's form tells people to type the month first
 
 booking-v3 prints `MM/DD/YYYY` under its date field. A day-first tenant's people type what the
 hint says, and the form reads the date the tenant's way. The symptom matches the parser bug, but
-the parser fix does not touch this code path. Fix the hint: print the order the form reads, from
-the tenant's locale. Only booking-v3 tenants, and only reports that came in through the form.
+the parser fix does not touch this code path. Only booking-v3 tenants, and only reports that
+came in through the form. Won't fix: the booking-v3 form is retired.
 
 ### `one-day move`: the date shifts by a day, day and month stay put
 
@@ -48,6 +55,8 @@ Tuesday while a client in Toronto gets Monday for the same meeting. An invite ar
 booking. June bookings are one day off. The desk's notes already flag them, but the cause table
 on #4471 files them under `parser` because it looks up the tenant only. A time-zone or
 daylight-saving conversion at a date boundary fits these reports. That is a lead, not a finding.
+Still open: the parser fix reads day and month in the right order, and a shifted day has both
+right.
 
 ## How the reports were counted
 
